@@ -4,11 +4,11 @@ import { checkMailRegex, checkPasswordRegex } from '../../utils/regex';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import { BasicResponse, REDIS_KEY } from '../../types';
-import { SignUpRequest, TokenResponse } from '../../types/auth';
+import { SignRequest, TokenResponse } from '../../types/auth';
 import { generateToken } from '../../utils/jwt';
 import redis from '../../config/redis';
 
-export const signUp = async (req: Request<{}, {}, SignUpRequest>, res: Response<TokenResponse | BasicResponse>) => {
+export const signUp = async (req: Request<{}, {}, SignRequest>, res: Response<TokenResponse | BasicResponse>) => {
   const accessTokenSecond = Number(process.env.ACCESS_TOKEN_SECOND) || 3600;
   const refreshTokenSecond = Number(process.env.REFRESH_TOKEN_SECOND) || 604800;
 
