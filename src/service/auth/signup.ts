@@ -9,6 +9,9 @@ import { generateToken } from '../../utils/jwt';
 import redis from '../../config/redis';
 
 export const signUp = async (req: Request<{}, {}, SignUpRequest>, res: Response<TokenResponse | BasicResponse>) => {
+  const accessTokenSecond = Number(process.env.ACCESS_TOKEN_SECOND) || 3600;
+  const refreshTokenSecond = Number(process.env.REFRESH_TOKEN_SECOND) || 604800;
+
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -45,8 +48,8 @@ export const signUp = async (req: Request<{}, {}, SignUpRequest>, res: Response<
     const accessToken = await generateToken(user.id.toString(), crypto.randomUUID(), true);
     const refreshToken = await generateToken(crypto.randomUUID(), user.id.toString(), false);
 
-    await redis.set(`${REDIS_KEY.ACCESS_TOKEN} ${user.id}`, accessToken);
-    await redis.set(`${REDIS_KEY.REFRESH_TOKEN} ${user.id}`, refreshToken);
+    await redis.set(`${REDIS_KEY.ACCESS_TOKEN} ${user.id}`, accessToken, 'EX', accessTokenSecond);
+    await redis.set(`${REDIS_KEY.REFRESH_TOKEN} ${user.id}`, refreshToken, 'EX', refreshTokenSecond);
 
     return res.status(201).json({
       accessToken: accessToken,
