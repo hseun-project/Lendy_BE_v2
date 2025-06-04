@@ -16,7 +16,7 @@ export interface AuthenticatedRequest<
   Params = Record<string, never>,
   Query = ParsedQs,
   Body = Record<string, never>,
-  ResBody = any
+  ResBody = unknown
 > extends Request<Params, ResBody, Body, Query> {
   payload?: JwtPayloadData;
   userId?: bigint;
