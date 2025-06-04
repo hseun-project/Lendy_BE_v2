@@ -15,5 +15,8 @@ app.post('/login', apiLimit, (req: Request, res: Response) => {
 app.post('/refresh', apiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
   auth.refresh(req, res);
 });
+app.post('/logout', apiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
+  auth.logout(req, res);
+});
 
 export default app;
