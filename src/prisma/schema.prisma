@@ -25,7 +25,7 @@ enum RequestLoanState {
 
 enum LoanState {
   ACTIVE
-  COMPLETE
+  COMPLETED
 }
 
 model Bank {
@@ -81,7 +81,7 @@ model Loan {
   debtLoan   User       @relation("DebtLoan", fields: [debtId], references: [id])
   bondLoan   User       @relation("BondLoan", fields: [bondId], references: [id])
 
-  repayment Repayment[]
+  repayment  Repayment[]
 }
 
 model Repayment {
