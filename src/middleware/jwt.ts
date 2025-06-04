@@ -1,8 +1,8 @@
 import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { AuthenticatedRequesta, JwtPayloadData } from '../types';
+import { AuthenticatedRequest, JwtPayloadData } from '../types';
 
-export const verifyJWT = (req: AuthenticatedRequesta, res: Response, next: NextFunction) => {
+export const verifyJWT = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
     const secretKey = process.env.SECRET_KEY;
     if (!secretKey) {

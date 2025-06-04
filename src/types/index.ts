@@ -12,7 +12,7 @@ export interface JwtPayloadData {
   iat: number;
 }
 
-export interface AuthenticatedRequesta<
+export interface AuthenticatedRequest<
   Params = Record<string, never>,
   Query = ParsedQs,
   Body = Record<string, never>,
