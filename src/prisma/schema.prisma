@@ -19,7 +19,7 @@ enum DuringType {
 
 enum RequestLoanState {
   PENDING
-  APPROVAL
+  APPROVED
   REJECTED
 }
 
