@@ -23,5 +23,6 @@ export const REDIS_KEY = {
   REFRESH_TOKEN: 'refresh',
   OPEN_ACCESS_TOKEN: 'openAccess',
   OPEN_REFRESH_TOKEN: 'openRefresh',
-  OPEN_CODE_STATE: 'openCodeState'
+  OPEN_CODE_STATE: 'openCodeState',
+  OPEN_USER_SEQ: 'openUserSeqNo'
 };
