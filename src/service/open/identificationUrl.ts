@@ -1,6 +1,5 @@
 import { Response } from 'express';
 import { AuthenticatedRequest, BasicResponse, REDIS_KEY } from '../../types';
-import { prisma } from '../../config/prisma';
 import crypto from 'crypto';
 import { IdentificationUrlResponse } from '../../types/open';
 import redis from '../../config/redis';
