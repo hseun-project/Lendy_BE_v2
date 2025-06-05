@@ -36,7 +36,7 @@ export const userToken = async (userCode: string, userId: string) => {
 
     await redis.set(`${REDIS_KEY.OPEN_ACCESS_TOKEN} ${userId}`, access_token, 'EX', expires_in);
     await redis.set(`${REDIS_KEY.OPEN_REFRESH_TOKEN} ${userId}`, refresh_token, 'EX', expires_in);
-    await redis.set(`${REDIS_KEY.OPEN_USER_SEQ} ${userId}`, user_seq_no);
+    await redis.set(`${REDIS_KEY.OPEN_USER_SEQ} ${userId}`, user_seq_no, 'EX', expires_in);
   } catch (err) {
     throw err;
   }
