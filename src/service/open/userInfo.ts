@@ -8,7 +8,7 @@ if (!OPEN_API_URL) {
   throw Error('env 변수 불러오기 실패');
 }
 
-export const userInfo = async (code: string, userIdStr: string) => {
+export const userInfo = async (userIdStr: string) => {
   try {
     const userSeqNo = await redis.get(`${REDIS_KEY.OPEN_USER_SEQ} ${userIdStr}`);
     const token = await redis.get(`${REDIS_KEY.OPEN_ACCESS_TOKEN} ${userIdStr}`);
@@ -23,6 +23,9 @@ export const userInfo = async (code: string, userIdStr: string) => {
       }
     });
     const { user_name } = res.data;
+    if (!user_name) {
+      throw Error('응답 데이터 없음');
+    }
 
     const userId = BigInt(userIdStr);
 
