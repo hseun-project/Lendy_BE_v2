@@ -5,9 +5,9 @@ import redis from '../../config/redis';
 import { generateToken } from '../../utils/jwt';
 import crypto from 'crypto';
 
-export const refresh = async (req: AuthenticatedRequest, res: Response<TokenResponse | BasicResponse>) => {
-  const accessTokenSecond = Number(process.env.ACCESS_TOKEN_SECOND) || 3600;
+const ACCESS_TOKEN_SECOND = Number(process.env.ACCESS_TOKEN_SECOND) || 3600;
 
+export const refresh = async (req: AuthenticatedRequest, res: Response<TokenResponse | BasicResponse>) => {
   try {
     const payload = req.payload;
     if (!payload) {
@@ -44,7 +44,7 @@ export const refresh = async (req: AuthenticatedRequest, res: Response<TokenResp
     }
 
     const accessToken = generateToken(userId, crypto.randomUUID(), true);
-    await redis.set(`${REDIS_KEY.ACCESS_TOKEN} ${userId}`, accessToken, 'EX', accessTokenSecond);
+    await redis.set(`${REDIS_KEY.ACCESS_TOKEN} ${userId}`, accessToken, 'EX', ACCESS_TOKEN_SECOND);
 
     return res.status(200).json({
       accessToken: accessToken,
