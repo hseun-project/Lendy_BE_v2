@@ -6,7 +6,7 @@ import { REDIS_KEY } from '../../types';
 const CLIENT_ID = process.env.OPEN_API_CLIENT_ID;
 const CLIENT_SECRET = process.env.OPEN_API_SECRET_KEY;
 const OPEN_API_URL = process.env.OPEN_API_URL;
-const REDIRECTION_URL = process.env.REDIRECTION_URL;
+const REDIRECTION_URL = process.env.OPEN_API_REDIRECTION_URL;
 if (!CLIENT_ID || !CLIENT_SECRET || !OPEN_API_URL || !REDIRECTION_URL) {
   throw Error('env 변수 불러오기 실패');
 }
