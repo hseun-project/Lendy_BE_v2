@@ -32,6 +32,7 @@ export const userInfo = async (code: string, userIdStr: string) => {
         name: user_name
       }
     });
+    await redis.del(`${REDIS_KEY.OPEN_USER_SEQ} ${userId}`);
   } catch (err) {
     throw err;
   }

@@ -24,6 +24,7 @@ export const openCode = async (req: Request, res: Response<BasicResponse>) => {
 
     await userToken(codeStr, userIdStr);
     await userInfo(codeStr, userIdStr);
+    await redis.del(`${REDIS_KEY.OPEN_CODE_STATE} ${state}`);
 
     return res.status(200).json({
       message: '본인 인증 완료'
