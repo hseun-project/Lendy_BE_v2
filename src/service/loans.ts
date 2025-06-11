@@ -1,4 +1,5 @@
 import { applyLoan } from './loans/applyLoan';
+import { bondList } from './loans/BondList';
 import { cancelApplyLoan } from './loans/cancelApplyLoan';
 import { changeLoanState } from './loans/changeLoanState';
 import { requestLoan } from './loans/requestLoan';
@@ -11,5 +12,6 @@ export default {
   cancelApplyLoan,
   requestLoanList,
   requestLoan,
-  changeLoanState
+  changeLoanState,
+  bondList
 };

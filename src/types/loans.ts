@@ -27,3 +27,12 @@ export interface RequestLoanResponse {
   duringType: DuringType;
   during: number;
 }
+
+export interface BondListData {
+  id: bigint;
+  money: number;
+  duringType: DuringType;
+  during: number;
+  startDate: Date;
+  repayment: number;
+}
