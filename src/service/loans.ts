@@ -1,5 +1,5 @@
 import { applyLoan } from './loans/applyLoan';
-import { bondList } from './loans/BondList';
+import { bondList } from './loans/bondList';
 import { cancelApplyLoan } from './loans/cancelApplyLoan';
 import { changeLoanState } from './loans/changeLoanState';
 import { requestLoan } from './loans/requestLoan';

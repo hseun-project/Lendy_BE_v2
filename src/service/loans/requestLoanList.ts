@@ -23,7 +23,7 @@ export const requestLoanList = async (req: AuthenticatedRequest, res: Response<R
 
     const where = {
       applyType: loanType,
-      ...(loanType === 'PRIVATE_LOAN' && { bondId: userId })
+      ...(loanType === ApplyType.PRIVATE_LOAN && { bondId: userId })
     };
 
     const requestLoans = await prisma.applyLoan.findMany({
