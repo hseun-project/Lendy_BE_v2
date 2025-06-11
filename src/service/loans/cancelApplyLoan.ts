@@ -18,8 +18,8 @@ export const cancelApplyLoan = async (req: AuthenticatedRequest, res: Response<B
       });
     }
 
-    const applyLoan = await prisma.applyLoan.findUnique({ where: { id: applyLoanId, debtId: userId } });
-    if (!applyLoan) {
+    const applyLoan = await prisma.applyLoan.findUnique({ where: { id: applyLoanId } });
+    if (!applyLoan || applyLoan.debtId !== userId) {
       return res.status(404).json({
         message: '존재하지 않는 대출 요청'
       });
