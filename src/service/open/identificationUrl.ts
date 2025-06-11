@@ -26,7 +26,7 @@ export const identificationUrl = async (req: AuthenticatedRequest, res: Response
       .slice(0, 32)
       .padStart(32, '0');
 
-    await redis.set(`${REDIS_KEY.OPEN_CODE_STATE} ${state}`, `${userId}`, 'EX', 1000 * 60 * 20);
+    await redis.set(`${REDIS_KEY.OPEN_CODE_STATE} ${state}`, `${userId}`, 'EX', 60 * 20);
 
     const url = `${OPEN_API_URL}/oauth/2.0/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECTION_URL}&scope=login+inquiry+transfer&state=${state}&auth_type=0`;
     return res.status(200).json({
