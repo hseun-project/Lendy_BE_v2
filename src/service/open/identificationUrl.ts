@@ -8,7 +8,7 @@ const CLIENT_ID = process.env.OPEN_API_CLIENT_ID;
 const REDIRECTION_URL = process.env.OPEN_API_REDIRECTION_URL;
 const OPEN_API_URL = process.env.OPEN_API_URL;
 if (!CLIENT_ID || !REDIRECTION_URL || !OPEN_API_URL) {
-  throw Error('env 변수 불러오기 실패');
+  throw Error('환경 변수 로드 실패');
 }
 
 export const identificationUrl = async (req: AuthenticatedRequest, res: Response<IdentificationUrlResponse | BasicResponse>) => {
