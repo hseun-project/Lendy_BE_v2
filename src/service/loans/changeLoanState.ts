@@ -50,7 +50,7 @@ export const changeLoanState = async (req: AuthenticatedRequest, res: Response<B
     });
 
     return res.status(200).json({
-      message: `대출 요청 ${state === RequestLoanState.APPROVED ? '승인' : '거절'} 완료료`
+      message: `대출 요청 ${state === RequestLoanState.APPROVED ? '승인' : '거절'} 완료`
     });
   } catch (err) {
     console.error(err);
