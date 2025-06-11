@@ -1,6 +1,6 @@
 import { AuthenticatedRequest, BasicResponse } from '../../types';
 import { Response } from 'express';
-import { ApplyBondUserData, ApplyUserQuery } from '../../types/apply';
+import { ApplyBondUserData, ApplyUserQuery } from '../../types/loans';
 import { prisma } from '../../config/prisma';
 
 const DEFAULT_USER_NAME = '무명';

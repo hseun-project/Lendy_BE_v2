@@ -1,4 +1,4 @@
-import { searchBondUser } from './apply/searchBondUser';
+import { searchBondUser } from './loans/searchBondUser';
 
 export default {
   searchBondUser
