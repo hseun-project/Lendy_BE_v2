@@ -30,8 +30,8 @@ export const sendMail = async (req: Request<{}, {}, SendMailRequest>, res: Respo
     await transport.sendMail({
       from: emailId,
       to: email,
-      subject: 'Lendy 인증 코드드',
-      text: `인증 코드는 ${random}`
+      subject: 'Lendy 인증 코드',
+      text: `인증 코드는 ${random}입니다`
     });
 
     await redis.set(email, random, 'EX', 600);
