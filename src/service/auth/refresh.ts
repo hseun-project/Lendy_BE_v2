@@ -11,7 +11,7 @@ export const refresh = async (req: AuthenticatedRequest, res: Response<TokenResp
   try {
     const payload = req.payload;
     if (!payload) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: '토큰 검증 실패'
       });
     }
@@ -23,14 +23,14 @@ export const refresh = async (req: AuthenticatedRequest, res: Response<TokenResp
 
     const userId = payload.sub;
     if (!userId) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: '만료되었거나 확인할 수 없는 토큰'
       });
     }
 
     const authorization = req.get('Authorization');
     if (!authorization) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: '만료되었거나 확인할 수 없는 토큰'
       });
     }
