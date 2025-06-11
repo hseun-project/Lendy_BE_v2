@@ -12,5 +12,8 @@ app.get('/info', getApiLimit, verifyJWT, (req: AuthenticatedRequest, res: Respon
 app.put('/bank', apiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
   user.modifyBank(req, res);
 });
+app.get('/apply', getApiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
+  user.myApplyLoan(req, res);
+});
 
 export default app;
