@@ -18,6 +18,9 @@ app.get('/bond', getApiLimit, verifyJWT, (req: AuthenticatedRequest, res: Respon
 app.get('/:applyLoanId', getApiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
   loans.requestLoan(req, res);
 });
+app.patch('/:applyLoanId', apiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
+  loans.changeLoanState(req, res);
+});
 app.delete('/:applyLoanId', apiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
   loans.cancelApplyLoan(req, res);
 });
