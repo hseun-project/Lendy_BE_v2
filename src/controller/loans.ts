@@ -9,6 +9,9 @@ const app = express.Router();
 app.post('/', apiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
   loans.applyLoan(req, res);
 });
+app.get('/', getApiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
+  loans.requestLoanList(req, res);
+});
 app.get('/bond', getApiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
   loans.searchBondUser(req, res);
 });
