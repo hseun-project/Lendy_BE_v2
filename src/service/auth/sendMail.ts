@@ -7,7 +7,7 @@ import { BasicResponse } from '../../types';
 const emailId = process.env.EMAIL_ID;
 const emailPw = process.env.EMAIL_PW;
 if (!emailId || !emailPw) {
-  throw Error('env 변수 불러오기 실패패');
+  throw Error('환경 변수 로드 실패');
 }
 
 export const sendMail = async (req: Request<{}, {}, SendMailRequest>, res: Response<BasicResponse>) => {
