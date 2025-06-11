@@ -19,6 +19,7 @@ export const verifyCode = async (req: Request<{}, {}, VerifyCodeRequest>, res: R
       });
     }
 
+    await redis.del(email);
     return res.status(200).json({
       message: '인증 성공'
     });
