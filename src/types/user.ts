@@ -7,8 +7,3 @@ export interface UserInfoResponse {
     bankNumber: string;
   };
 }
-
-export interface ModifyBankRequest {
-  bankId: number;
-  bankNumber: string;
-}
