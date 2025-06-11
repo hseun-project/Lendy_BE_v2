@@ -30,13 +30,14 @@ export const searchBondUser = async (req: AuthenticatedRequest<{}, ApplyUserQuer
           },
           {
             email: {
-              contains: keyword,
+              startsWith: keyword,
               mode: 'insensitive'
             }
           }
         ]
       },
-      orderBy: [{ email: 'asc' }, { name: 'asc' }]
+      orderBy: [{ email: 'asc' }, { name: 'asc' }],
+      take: 20
     });
 
     const result: ApplyBondUserData[] = bondUsers.map((user) => ({
