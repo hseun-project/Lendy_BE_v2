@@ -9,7 +9,7 @@ const app = express.Router();
 app.post('/signup', apiLimit, (req: Request, res: Response) => {
   auth.signUp(req, res);
 });
-app.post('email', apiLimit, (req: Request, res: Response) => {
+app.post('/email', apiLimit, (req: Request, res: Response) => {
   auth.sendMail(req, res);
 });
 app.post('/email/verify', apiLimit, (req: Request, res: Response) => {
