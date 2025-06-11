@@ -4,6 +4,7 @@ import { createTransport } from 'nodemailer';
 import { SendMailRequest } from '../../types/auth';
 import { BasicResponse } from '../../types';
 import { checkMailRegex } from '../../utils/regex';
+import crypto from 'crypto';
 
 const emailId = process.env.EMAIL_ID;
 const emailPw = process.env.EMAIL_PW;
@@ -32,7 +33,7 @@ export const sendMail = async (req: Request<{}, {}, SendMailRequest>, res: Respo
   });
 
   try {
-    const random = Math.random().toString(36).slice(2, 8);
+    const random = crypto.randomBytes(3).toString('hex');
 
     await transport.sendMail({
       from: emailId,
