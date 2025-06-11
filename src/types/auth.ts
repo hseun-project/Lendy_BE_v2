@@ -11,3 +11,8 @@ export interface TokenResponse {
 export interface SendMailRequest {
   email: string;
 }
+
+export interface VerifyCodeRequest {
+  email: string;
+  code: string;
+}
