@@ -32,7 +32,7 @@ export const applyLoan = async (req: AuthenticatedRequest, res: Response<BasicRe
     }
 
     const aggregateApplyResult = await prisma.applyLoan.aggregate({ where: { debtId: userId, state: RequestLoanState.PENDING }, _sum: { money: true } });
-    const totalApplyMoney = aggregateApplyResult._sum.money || 0;
+    const totalApplyMoney = Number(aggregateApplyResult._sum.money ?? 0);
     if (totalApplyMoney + money > 1000000) {
       return res.status(409).json({
         message: '최대 대출 신청 한도 초과'
@@ -40,7 +40,7 @@ export const applyLoan = async (req: AuthenticatedRequest, res: Response<BasicRe
     }
 
     const myLoan = await prisma.loan.findMany({ where: { debtId: userId } });
-    if (myLoan) {
+    if (myLoan.length > 0) {
       // 신용 점수 감소 API 호출
     }
 

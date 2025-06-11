@@ -31,7 +31,7 @@ export const requestLoan = async (req: AuthenticatedRequest, res: Response<Reque
     }
 
     return res.status(200).json({
-      id: applyLoanId,
+      id: requestLoan.id,
       debtName: requestLoan.debtApply.name || '채무자',
       money: requestLoan.money,
       interest: requestLoan.interest.toString(),

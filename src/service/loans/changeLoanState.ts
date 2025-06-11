@@ -36,7 +36,7 @@ export const changeLoanState = async (req: AuthenticatedRequest, res: Response<B
       await tx.applyLoan.update({ where: { id: applyLoanId }, data: { state: state } });
 
       if (state === RequestLoanState.APPROVED) {
-        await prisma.loan.create({
+        await tx.loan.create({
           data: {
             debtId: applyLoan.debtId,
             bondId: userId,

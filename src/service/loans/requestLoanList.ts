@@ -14,7 +14,7 @@ export const requestLoanList = async (req: AuthenticatedRequest, res: Response<R
       });
     }
 
-    const { loanType } = req.query || ApplyType.PUBLIC_LOAN;
+    const loanType = req.query.loanType ?? ApplyType.PUBLIC_LOAN;
     if (!(loanType === ApplyType.PRIVATE_LOAN || loanType === ApplyType.PUBLIC_LOAN)) {
       return res.status(400).json({
         message: '올바르지 않은 파라미터'
@@ -45,7 +45,7 @@ export const requestLoanList = async (req: AuthenticatedRequest, res: Response<R
 
     const result: RequestLoanListData[] = requestLoans.map((loan) => ({
       id: loan.id,
-      debtName: loan.debtApply.name || DEFAULT_USER_NAME,
+      debtName: loan.debtApply.name ?? DEFAULT_USER_NAME,
       creditScore: loan.debtApply.creditScore,
       money: loan.money,
       duringType: loan.duringType,
