@@ -15,6 +15,9 @@ app.get('/', getApiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) 
 app.get('/bond', getApiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
   loans.searchBondUser(req, res);
 });
+app.get('/:applyLoanId', getApiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
+  loans.requestLoan(req, res);
+});
 app.delete('/:applyLoanId', apiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
   loans.cancelApplyLoan(req, res);
 });
