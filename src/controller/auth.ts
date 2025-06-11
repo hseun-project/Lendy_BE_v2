@@ -9,6 +9,9 @@ const app = express.Router();
 app.post('/signup', apiLimit, (req: Request, res: Response) => {
   auth.signUp(req, res);
 });
+app.post('email', apiLimit, (req: Request, res: Response) => {
+  auth.sendMail(req, res);
+});
 app.post('/login', apiLimit, (req: Request, res: Response) => {
   auth.login(req, res);
 });
