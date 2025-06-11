@@ -20,7 +20,8 @@ export const bondList = async (req: AuthenticatedRequest, res: Response<BondList
         during: true,
         startDate: true,
         repayment: { select: { repayMoney: true } }
-      }
+      },
+      where: { bondId: userId }
     });
 
     const result = myBondLoanList.map((loan) => {
