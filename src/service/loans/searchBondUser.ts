@@ -7,7 +7,7 @@ const DEFAULT_USER_NAME = '무명';
 
 export const searchBondUser = async (req: AuthenticatedRequest<{}, ApplyUserQuery, {}>, res: Response<ApplyBondUserData[] | BasicResponse>) => {
   try {
-    const { keyword } = req.query;
+    const keyword = req.query.keyword?.trim();
     if (!keyword) {
       return res.status(400).json({
         message: '올바르지 않은 입력값'
