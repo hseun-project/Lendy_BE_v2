@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { createTransport } from 'nodemailer';
 import { SendMailRequest } from '../../types/auth';
 import { BasicResponse } from '../../types';
+import { checkMailRegex } from '../../utils/regex';
 
 const emailId = process.env.EMAIL_ID;
 const emailPw = process.env.EMAIL_PW;
@@ -12,6 +13,12 @@ if (!emailId || !emailPw) {
 
 export const sendMail = async (req: Request<{}, {}, SendMailRequest>, res: Response<BasicResponse>) => {
   const { email } = req.body;
+
+  if (!checkMailRegex(email)) {
+    return res.status(400).json({
+      message: '이메일 양식 오류'
+    });
+  }
 
   const transport = createTransport({
     service: 'gmail',
