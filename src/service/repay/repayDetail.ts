@@ -5,7 +5,7 @@ import { RepayDetailResponse } from '../../types/repay';
 
 export const repayDetail = async (req: AuthenticatedRequest, res: Response<RepayDetailResponse | BasicResponse>) => {
   try {
-    const loanId = req.params.loanId;
+    const loanId = BigInt(req.params.loanId);
     if (!loanId) {
       return res.status(400).json({
         message: '올바르지 않은 파라미터'

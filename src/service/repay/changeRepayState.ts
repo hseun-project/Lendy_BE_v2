@@ -4,7 +4,7 @@ import { LoanState, prisma, RequestLoanState } from '../../config/prisma';
 
 export const changeRepayState = async (req: AuthenticatedRequest, res: Response<BasicResponse>) => {
   try {
-    const repaymentId = req.params.repaymentId;
+    const repaymentId = BigInt(req.params.repaymentId);
     if (!repaymentId) {
       return res.status(400).json({
         message: '올바르지 않은 파라미터'

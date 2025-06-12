@@ -4,7 +4,7 @@ import { prisma } from '../../config/prisma';
 
 export const requestRepay = async (req: AuthenticatedRequest, res: Response<BasicResponse>) => {
   try {
-    const loanId = req.params.loanId;
+    const loanId = BigInt(req.params.loanId);
     const { repayMoney, name } = req.body;
     if (!loanId || !repayMoney || !name) {
       return res.status(400).json({
@@ -26,7 +26,8 @@ export const requestRepay = async (req: AuthenticatedRequest, res: Response<Basi
 
     const lastRepayDate = lastRepayment?.repayDate ?? loan.startDate;
     const currentDate = new Date();
-    const elapsedDays = Math.max(Math.floor(currentDate.getTime() - new Date(lastRepayDate).getTime()) / (1000 * 60 * 60 * 24), 0);
+    const msDiff = currentDate.getTime() - new Date(lastRepayDate).getTime();
+    const elapsedDays = Math.max(Math.floor(msDiff / (1000 * 60 * 60 * 24)), 0);
 
     const annualRate = parseFloat(loan.interest.toString()) / 100;
     const dailyRate = annualRate / 365;
