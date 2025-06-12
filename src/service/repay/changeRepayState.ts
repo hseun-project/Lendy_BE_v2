@@ -30,7 +30,7 @@ export const changeRepayState = async (req: AuthenticatedRequest, res: Response<
         select: {
           id: true,
           money: true,
-          repayment: { select: { repayMoney: true } }
+          repayment: { select: { repayMoney: true }, where: { state: 'APPROVED' } }
         },
         where: { id: repayment.loanId }
       });

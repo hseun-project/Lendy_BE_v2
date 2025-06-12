@@ -19,7 +19,7 @@ export const repayList = async (req: AuthenticatedRequest, res: Response<RepayLi
         duringType: true,
         during: true,
         startDate: true,
-        repayment: { select: { repayMoney: true } }
+        repayment: { select: { repayMoney: true }, where: { state: 'APPROVED' } }
       },
       where: { debtId: userId }
     });
