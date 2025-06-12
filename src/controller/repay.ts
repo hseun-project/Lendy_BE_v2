@@ -9,5 +9,8 @@ const app = express.Router();
 app.get('/', getApiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
   repay.repayList(req, res);
 });
+app.get('/:loanId', getApiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
+  repay.repayDetail(req, res);
+});
 
 export default app;

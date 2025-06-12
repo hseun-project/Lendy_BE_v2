@@ -8,3 +8,16 @@ export interface RepayListData {
   startDate: Date;
   repayment: number;
 }
+
+export interface RepayDetailResponse {
+  id: bigint;
+  bondName: string;
+  bankName: string;
+  bankNumber: string;
+  money: number;
+  duringType: DuringType;
+  during: number;
+  startDate: Date;
+  interest: string;
+  repayment: number;
+}
