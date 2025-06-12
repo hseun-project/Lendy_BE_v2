@@ -1,4 +1,4 @@
-import { DuringType } from '../config/prisma';
+import { DuringType, RequestLoanState } from '../config/prisma';
 
 export interface RepayListData {
   id: bigint;
@@ -20,4 +20,12 @@ export interface RepayDetailResponse {
   startDate: Date;
   interest: string;
   repayment: number;
+}
+
+export interface RequestRepayListData {
+  id: bigint;
+  debtName: string;
+  repayMoney: number;
+  repayInterest: number;
+  repayDate: Date;
 }

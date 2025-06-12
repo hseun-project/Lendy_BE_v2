@@ -1,9 +1,11 @@
 import { repayDetail } from './repay/repayDetail';
 import { repayList } from './repay/repayList';
 import { requestRepay } from './repay/requestRepay';
+import { requestRepayList } from './repay/requestRepayList';
 
 export default {
   repayList,
   repayDetail,
-  requestRepay
+  requestRepay,
+  requestRepayList
 };
