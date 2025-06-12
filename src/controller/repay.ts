@@ -18,5 +18,8 @@ app.post('/:loanId', apiLimit, verifyJWT, (req: AuthenticatedRequest, res: Respo
 app.get('/request', getApiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
   repay.requestRepayList(req, res);
 });
+app.patch('/:repaymentId', apiLimit, verifyJWT, (req: AuthenticatedRequest, res: Response) => {
+  repay.changeRepayState(req, res);
+});
 
 export default app;
