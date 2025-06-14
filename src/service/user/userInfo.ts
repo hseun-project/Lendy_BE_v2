@@ -1,7 +1,14 @@
 import { Response } from 'express';
-import { AuthenticatedRequest, BasicResponse } from '../../types';
+import { AuthenticatedRequest, BasicResponse, REDIS_KEY } from '../../types';
 import { prisma } from '../../config/prisma';
 import { UserInfoResponse } from '../../types/user';
+import axios from 'axios';
+import redis from '../../config/redis';
+
+const bankServerUrl = process.env.BANK_SERVER_URL;
+if (!bankServerUrl) {
+  throw Error('env 변수 불러오기 실패');
+}
 
 export const userInfo = async (req: AuthenticatedRequest, res: Response<BasicResponse | UserInfoResponse>) => {
   try {
@@ -18,7 +25,7 @@ export const userInfo = async (req: AuthenticatedRequest, res: Response<BasicRes
         email: true,
         name: true,
         creditScore: true,
-        bank: { select: { bankName: true, bankNumber: true, bankNumberMasked: true } }
+        bank: { select: { id: true, bankName: true, bankNumber: true, bankNumberMasked: true } }
       }
     });
     if (!user) {
@@ -27,13 +34,17 @@ export const userInfo = async (req: AuthenticatedRequest, res: Response<BasicRes
       });
     }
 
+    const token = await redis.get(`${REDIS_KEY.ACCESS_TOKEN} ${userId}`);
+    const bankMoney = await axios.get(`${bankServerUrl}/${user.bank?.id}`, { headers: { Authorization: `Bearer ${token}` } });
+
     return res.status(200).json({
       email: user.email,
       name: user.name || '사용자',
       creditScore: user.creditScore,
       bank: {
         bankName: user.bank?.bankName || '은행명',
-        bankNumber: user.bank?.bankNumber || user.bank?.bankNumberMasked || ''
+        bankNumber: user.bank?.bankNumber || user.bank?.bankNumberMasked || '',
+        money: bankMoney.data.money
       }
     });
   } catch (err) {
