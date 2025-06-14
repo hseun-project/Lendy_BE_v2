@@ -18,8 +18,7 @@ export const userInfo = async (req: AuthenticatedRequest, res: Response<BasicRes
         email: true,
         name: true,
         creditScore: true,
-        bankNumber: true,
-        bank: { select: { name: true } }
+        bank: { select: { bankName: true, bankNumber: true, bankNumberMasked: true } }
       }
     });
     if (!user) {
@@ -33,8 +32,8 @@ export const userInfo = async (req: AuthenticatedRequest, res: Response<BasicRes
       name: user.name || '사용자',
       creditScore: user.creditScore,
       bank: {
-        bankName: user.bank?.name || '은행명',
-        bankNumber: user.bankNumber || ''
+        bankName: user.bank?.bankName || '은행명',
+        bankNumber: user.bank?.bankNumber || user.bank?.bankNumberMasked || ''
       }
     });
   } catch (err) {
