@@ -18,7 +18,7 @@ export const repayDetail = async (req: AuthenticatedRequest, res: Response<Repay
         bondLoan: {
           select: {
             name: true,
-            bank: true
+            bank: { select: { bankName: true, bankNumber: true, bankNumberMasked: true } }
           }
         },
         money: true,
