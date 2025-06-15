@@ -1,13 +1,7 @@
 import { AuthenticatedRequest, BasicResponse } from '../../types';
 import { Response } from 'express';
 import { RequestLoanState, prisma } from '../../config/prisma';
-import axios from 'axios';
 import { sendMoney } from '../../utils/sendMoney';
-
-const BANK_SERVER_URL = process.env.BANK_SERVER_URL;
-if (!BANK_SERVER_URL) {
-  throw Error('env 변수 불러오기 실패');
-}
 
 export const changeLoanState = async (req: AuthenticatedRequest, res: Response<BasicResponse>) => {
   try {
