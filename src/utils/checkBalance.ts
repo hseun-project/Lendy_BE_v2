@@ -2,6 +2,9 @@ import axios from 'axios';
 import { BankResponse } from '../types';
 
 const BANK_SERVER_URL = process.env.BANK_SERVER_URL;
+if (!BANK_SERVER_URL) {
+  throw Error('env 변수 불러오기 실패');
+}
 
 export const checkBalance = async (token: string, bankId: bigint): Promise<CheckBalanceResponse> => {
   try {
