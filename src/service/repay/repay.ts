@@ -12,9 +12,9 @@ export const repay = async (req: AuthenticatedRequest, res: Response<RepayRespon
       });
     }
 
-    const loanId = req.params.loanId;
+    const loanId = BigInt(req.params.loanId);
     const { money } = req.body;
-    if (!loanId || !money) {
+    if (!loanId || !money || money <= 0) {
       return res.status(400).json({
         message: '올바르지 않은 파라미터'
       });
