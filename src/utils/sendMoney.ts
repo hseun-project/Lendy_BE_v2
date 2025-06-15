@@ -25,14 +25,14 @@ export const sendMoney = async (sendUserId: bigint, receiveUserId: bigint, money
         message: '등록되지 않은 계좌 정보'
       };
     }
-    const checkBalanceResposne = await checkBalance(openToken, sendUserBank.id);
-    if (checkBalanceResposne.status !== 200) {
+    const checkBalanceResponse = await checkBalance(openToken, sendUserBank.id);
+    if (checkBalanceResponse.status !== 200) {
       return {
-        status: checkBalanceResposne.status,
-        message: checkBalanceResposne.message
+        status: checkBalanceResponse.status,
+        message: checkBalanceResponse.message
       };
     }
-    if (checkBalanceResposne.money < money) {
+    if (checkBalanceResponse.money < money) {
       return {
         status: 400,
         message: '계좌 잔액 부족'
