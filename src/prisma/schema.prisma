@@ -30,7 +30,6 @@ enum LoanState {
 
 model User {
   id          BigInt      @id @default(autoincrement()) @db.BigInt
-  bankId      BigInt?     @db.BigInt
   email       String      @db.VarChar(32) @unique
   password    String
   creditScore Int         @default(500)
