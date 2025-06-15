@@ -1,8 +1,9 @@
 import { Response } from 'express';
 import { AuthenticatedRequest, BasicResponse } from '../../types';
 import { LoanState, prisma } from '../../config/prisma';
+import { RepayResponse } from '../../types/repay';
 
-export const repay = async (req: AuthenticatedRequest, res: Response<BasicResponse>) => {
+export const repay = async (req: AuthenticatedRequest, res: Response<RepayResponse | BasicResponse>) => {
   try {
     const userId = req.userId;
     if (!userId) {
@@ -47,6 +48,12 @@ export const repay = async (req: AuthenticatedRequest, res: Response<BasicRespon
     const dailyRate = annualRate / 365;
     const interest = Math.floor((loan.money - repayMoney) * dailyRate * elapsedDays);
 
+    if (money <= interest) {
+      return res.status(400).json({
+        message: '상환 금액은 이자를 초과해야 한다'
+      });
+    }
+
     await prisma.$transaction(async (tx) => {
       await tx.repayment.create({
         data: {
@@ -65,7 +72,8 @@ export const repay = async (req: AuthenticatedRequest, res: Response<BasicRespon
     });
 
     return res.status(201).json({
-      message: '상환 완료'
+      repayMoney: money - interest,
+      repayInterest: interest
     });
   } catch (err) {
     console.error(err);
