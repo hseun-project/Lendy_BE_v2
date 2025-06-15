@@ -10,8 +10,8 @@ if (!OPEN_API_URL) {
 
 export const userInfo = async (userIdStr: string) => {
   try {
-    const userSeqNo = await redis.get(`${REDIS_KEY.OPEN_USER_SEQ} ${userIdStr}`);
-    const token = await redis.get(`${REDIS_KEY.OPEN_ACCESS_TOKEN} ${userIdStr}`);
+    const userSeqNo = await redis.get(`${REDIS_KEY.OPEN_USER_SEQ}:${userIdStr}`);
+    const token = await redis.get(`${REDIS_KEY.OPEN_ACCESS_TOKEN}:${userIdStr}`);
     if (!userSeqNo || !token) {
       throw Error('userSeqNo or token is not found');
     }
@@ -48,7 +48,7 @@ export const userInfo = async (userIdStr: string) => {
         userId: userId
       }
     });
-    await redis.del(`${REDIS_KEY.OPEN_USER_SEQ} ${userIdStr}`);
+    await redis.del(`${REDIS_KEY.OPEN_USER_SEQ}:${userIdStr}`);
   } catch (err) {
     throw err;
   }

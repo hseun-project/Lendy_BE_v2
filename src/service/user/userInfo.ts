@@ -29,7 +29,7 @@ export const userInfo = async (req: AuthenticatedRequest, res: Response<BasicRes
       });
     }
 
-    const openToken = await redis.get(`${REDIS_KEY.OPEN_ACCESS_TOKEN} ${userId}`);
+    const openToken = await redis.get(`${REDIS_KEY.OPEN_ACCESS_TOKEN}:${userId}`);
     if (!openToken || !user.bank?.id) {
       return res.status(404).json({
         message: '등록되지 않은 계좌 정보'

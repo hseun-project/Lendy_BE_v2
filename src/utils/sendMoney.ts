@@ -18,7 +18,7 @@ export const sendMoney = async (sendUserId: bigint, receiveUserId: bigint, money
       };
     }
 
-    const openToken = await redis.get(`${REDIS_KEY.OPEN_ACCESS_TOKEN} ${sendUserBank.userId}`);
+    const openToken = await redis.get(`${REDIS_KEY.OPEN_ACCESS_TOKEN}:${sendUserBank.userId}`);
     if (!openToken) {
       return {
         status: 404,
