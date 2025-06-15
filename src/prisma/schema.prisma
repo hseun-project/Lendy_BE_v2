@@ -90,7 +90,6 @@ model Loan {
 model Repayment {
   id            BigInt           @id @default(autoincrement()) @db.BigInt
   loanId        BigInt           @db.BigInt
-  name          String           @db.VarChar(10)
   repayDate     DateTime         @db.Date @default(now())
   repayInterest Int
   repayMoney    Int
