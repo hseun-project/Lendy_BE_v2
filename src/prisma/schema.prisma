@@ -94,7 +94,6 @@ model Repayment {
   repayDate     DateTime         @db.Date @default(now())
   repayInterest Int
   repayMoney    Int
-  state         RequestLoanState @default(PENDING)
 
   loan          Loan             @relation(fields: [loanId], references: [id])
 }

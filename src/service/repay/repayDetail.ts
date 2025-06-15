@@ -26,7 +26,7 @@ export const repayDetail = async (req: AuthenticatedRequest, res: Response<Repay
         during: true,
         startDate: true,
         interest: true,
-        repayment: { select: { repayMoney: true }, where: { state: 'APPROVED' } }
+        repayment: { select: { repayMoney: true } }
       },
       where: { id: loanId }
     });
