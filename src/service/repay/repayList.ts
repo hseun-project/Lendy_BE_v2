@@ -24,6 +24,10 @@ export const repayList = async (req: AuthenticatedRequest, res: Response<RepayLi
       where: { debtId: userId, state: LoanState.ACTIVE }
     });
 
+    if (myRepayList.length === 0) {
+      return res.status(200).json([]);
+    }
+
     const repaySum = await prisma.repayment.groupBy({
       by: ['loanId'],
       where: { loanId: { in: myRepayList.map((loan) => loan.id) } },
