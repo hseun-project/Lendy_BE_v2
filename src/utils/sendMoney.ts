@@ -26,12 +26,6 @@ export const sendMoney = async (sendUserId: bigint, receiveUserId: bigint, money
       };
     }
     const checkBalanceResponse = await checkBalance(openToken, sendUserBank.id);
-    if (checkBalanceResponse.status !== 200) {
-      return {
-        status: checkBalanceResponse.status,
-        message: checkBalanceResponse.message
-      };
-    }
     if (checkBalanceResponse.money < money) {
       return {
         status: 400,

@@ -14,13 +14,6 @@ export const checkBalance = async (token: string, bankId: bigint): Promise<Check
       },
       timeout: 5000
     });
-    if (!response || response.status !== 200) {
-      return {
-        status: 404,
-        message: '계좌 잔액 조회 불가',
-        money: 0
-      };
-    }
     return {
       status: 200,
       message: '계좌 잔액 조회 성공',
