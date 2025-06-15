@@ -8,7 +8,8 @@ export const checkBalance = async (token: string, bankId: bigint): Promise<Check
     const response = await axios.get(`${BANK_SERVER_URL}/${bankId}`, {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      timeout: 5000
     });
     if (!response) {
       return {
