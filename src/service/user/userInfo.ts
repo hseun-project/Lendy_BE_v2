@@ -2,14 +2,8 @@ import { Response } from 'express';
 import { AuthenticatedRequest, BasicResponse, REDIS_KEY } from '../../types';
 import { prisma } from '../../config/prisma';
 import { UserInfoResponse } from '../../types/user';
-import axios from 'axios';
 import redis from '../../config/redis';
 import { checkBalance } from '../../utils/checkBalance';
-
-const bankServerUrl = process.env.BANK_SERVER_URL;
-if (!bankServerUrl) {
-  throw Error('env 변수 불러오기 실패');
-}
 
 export const userInfo = async (req: AuthenticatedRequest, res: Response<BasicResponse | UserInfoResponse>) => {
   try {

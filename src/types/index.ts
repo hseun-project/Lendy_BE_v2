@@ -26,3 +26,8 @@ export const REDIS_KEY = {
   OPEN_CODE_STATE: 'openCodeState',
   OPEN_USER_SEQ: 'openUserSeqNo'
 };
+
+export interface BankResponse {
+  status: number;
+  message: string;
+}

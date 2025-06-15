@@ -1,6 +1,13 @@
 import { AuthenticatedRequest, BasicResponse } from '../../types';
 import { Response } from 'express';
 import { RequestLoanState, prisma } from '../../config/prisma';
+import axios from 'axios';
+import { sendMoney } from '../../utils/sendMoney';
+
+const BANK_SERVER_URL = process.env.BANK_SERVER_URL;
+if (!BANK_SERVER_URL) {
+  throw Error('env 변수 불러오기 실패');
+}
 
 export const changeLoanState = async (req: AuthenticatedRequest, res: Response<BasicResponse>) => {
   try {
@@ -32,10 +39,24 @@ export const changeLoanState = async (req: AuthenticatedRequest, res: Response<B
       });
     }
 
+    const bank = await prisma.bank.findUnique({ where: { userId: userId } });
+    if (!bank) {
+      return res.status(404).json({
+        message: '존재하지 않는 계좌정보'
+      });
+    }
+
     await prisma.$transaction(async (tx) => {
       await tx.applyLoan.update({ where: { id: applyLoanId }, data: { state: state } });
 
       if (state === RequestLoanState.APPROVED) {
+        const { status, message } = await sendMoney(userId, applyLoan.debtId, applyLoan.money);
+        if (status !== 200) {
+          return res.status(status).json({
+            message: message
+          });
+        }
+
         await tx.loan.create({
           data: {
             debtId: applyLoan.debtId,
