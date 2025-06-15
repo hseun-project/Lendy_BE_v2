@@ -4,6 +4,7 @@ import { prisma } from '../../config/prisma';
 import { UserInfoResponse } from '../../types/user';
 import axios from 'axios';
 import redis from '../../config/redis';
+import { checkBalance } from '../../utils/checkBalance';
 
 const bankServerUrl = process.env.BANK_SERVER_URL;
 if (!bankServerUrl) {
@@ -34,8 +35,18 @@ export const userInfo = async (req: AuthenticatedRequest, res: Response<BasicRes
       });
     }
 
-    const token = await redis.get(`${REDIS_KEY.ACCESS_TOKEN} ${userId}`);
-    const bankMoney = await axios.get(`${bankServerUrl}/${user.bank?.id}`, { headers: { Authorization: `Bearer ${token}` } });
+    const openToken = await redis.get(`${REDIS_KEY.OPEN_ACCESS_TOKEN} ${userId}`);
+    if (!openToken || !user.bank?.id) {
+      return res.status(404).json({
+        message: '등록되지 않은 계좌 정보'
+      });
+    }
+    const checkBalanceResponse = await checkBalance(openToken, user.bank.id);
+    if (checkBalanceResponse.status !== 200) {
+      return res.status(checkBalanceResponse.status).json({
+        message: checkBalanceResponse.message
+      });
+    }
 
     return res.status(200).json({
       email: user.email,
@@ -44,7 +55,7 @@ export const userInfo = async (req: AuthenticatedRequest, res: Response<BasicRes
       bank: {
         bankName: user.bank?.bankName || '은행명',
         bankNumber: user.bank?.bankNumber || user.bank?.bankNumberMasked || '',
-        money: bankMoney.data.money
+        money: checkBalanceResponse.money
       }
     });
   } catch (err) {
