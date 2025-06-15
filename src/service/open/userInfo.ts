@@ -23,31 +23,38 @@ export const userInfo = async (userIdStr: string) => {
       }
     });
     const { user_name, api_tran_id, res_list } = res.data;
-    if (!user_name || !api_tran_id || !res_list) {
+    if (!user_name || !api_tran_id || !res_list || !Array.isArray(res_list) || res_list.length === 0) {
       throw Error('응답 데이터 없음');
     }
 
     const userId = BigInt(userIdStr);
 
-    await prisma.user.update({
-      where: { id: userId },
-      data: {
-        name: user_name
-      }
-    });
-
     const bankData = res_list[0];
 
-    await prisma.bank.create({
-      data: {
-        bankName: bankData.bank_name,
-        bankNumber: bankData.account_num,
-        bankNumberMasked: bankData.account_num_masked,
-        apiTranId: api_tran_id,
-        alias: bankData.account_alias,
-        userId: userId
-      }
-    });
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: userId },
+        data: { name: user_name }
+      }),
+      prisma.bank.upsert({
+        where: { userId: userId },
+        update: {
+          bankName: bankData.bank_name,
+          bankNumber: bankData.account_num,
+          bankNumberMasked: bankData.account_num_masked,
+          apiTranId: api_tran_id,
+          alias: bankData.account_alias
+        },
+        create: {
+          bankName: bankData.bank_name,
+          bankNumber: bankData.account_num,
+          bankNumberMasked: bankData.account_num_masked,
+          apiTranId: api_tran_id,
+          alias: bankData.account_alias,
+          userId: userId
+        }
+      })
+    ]);
     await redis.del(`${REDIS_KEY.OPEN_USER_SEQ}:${userIdStr}`);
   } catch (err) {
     throw err;
