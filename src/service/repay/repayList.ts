@@ -2,6 +2,7 @@ import { AuthenticatedRequest, BasicResponse } from '../../types';
 import { Response } from 'express';
 import { LoanState, prisma } from '../../config/prisma';
 import { RepayListData } from '../../types/repay';
+import loans from '../loans';
 
 export const repayList = async (req: AuthenticatedRequest, res: Response<RepayListData[] | BasicResponse>) => {
   try {
@@ -18,16 +19,23 @@ export const repayList = async (req: AuthenticatedRequest, res: Response<RepayLi
         money: true,
         duringType: true,
         during: true,
-        startDate: true,
-        repayment: { select: { repayMoney: true } }
+        startDate: true
       },
       where: { debtId: userId, state: LoanState.ACTIVE }
     });
 
-    const result = myRepayList.map((loan) => {
-      const totalRepay = loan.repayment.reduce((sum, r) => sum + r.repayMoney, 0);
-      return { ...loan, repayment: totalRepay };
+    const repaySum = await prisma.repayment.groupBy({
+      by: ['loanId'],
+      where: { loanId: { in: myRepayList.map((loan) => loan.id) } },
+      _sum: { repayMoney: true }
     });
+
+    const repaySumMap = new Map(repaySum.map((r) => [r.loanId.toString(), r._sum.repayMoney ?? 0]));
+
+    const result = myRepayList.map((loan) => ({
+      ...loan,
+      repayment: repaySumMap.get(loan.id.toString()) || 0
+    }));
 
     return res.status(200).json(result);
   } catch (err) {
