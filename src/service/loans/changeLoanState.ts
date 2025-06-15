@@ -40,17 +40,17 @@ export const changeLoanState = async (req: AuthenticatedRequest, res: Response<B
       });
     }
 
+    if (state === RequestLoanState.APPROVED) {
+      const { status, message } = await sendMoney(userId, applyLoan.debtId, applyLoan.money);
+      if (status !== 200) {
+        return res.status(status).json({
+          message: message
+        });
+      }
+    }
+
     await prisma.$transaction(async (tx) => {
-      await tx.applyLoan.update({ where: { id: applyLoanId }, data: { state: state } });
-
       if (state === RequestLoanState.APPROVED) {
-        const { status, message } = await sendMoney(userId, applyLoan.debtId, applyLoan.money);
-        if (status !== 200) {
-          return res.status(status).json({
-            message: message
-          });
-        }
-
         await tx.loan.create({
           data: {
             debtId: applyLoan.debtId,
@@ -62,6 +62,7 @@ export const changeLoanState = async (req: AuthenticatedRequest, res: Response<B
           }
         });
       }
+      await tx.applyLoan.update({ where: { id: applyLoanId }, data: { state: state } });
     });
 
     return res.status(200).json({
