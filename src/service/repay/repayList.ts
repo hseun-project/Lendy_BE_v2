@@ -1,6 +1,6 @@
 import { AuthenticatedRequest, BasicResponse } from '../../types';
 import { Response } from 'express';
-import { prisma } from '../../config/prisma';
+import { LoanState, prisma } from '../../config/prisma';
 import { RepayListData } from '../../types/repay';
 
 export const repayList = async (req: AuthenticatedRequest, res: Response<RepayListData[] | BasicResponse>) => {
@@ -19,9 +19,9 @@ export const repayList = async (req: AuthenticatedRequest, res: Response<RepayLi
         duringType: true,
         during: true,
         startDate: true,
-        repayment: { select: { repayMoney: true }, where: { state: 'APPROVED' } }
+        repayment: { select: { repayMoney: true } }
       },
-      where: { debtId: userId }
+      where: { debtId: userId, state: LoanState.ACTIVE }
     });
 
     const result = myRepayList.map((loan) => {
