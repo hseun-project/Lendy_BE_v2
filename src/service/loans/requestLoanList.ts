@@ -1,6 +1,6 @@
 import { AuthenticatedRequest, BasicResponse } from '../../types';
 import { Response } from 'express';
-import { prisma, ApplyType, LoanState, RequestLoanState } from '../../config/prisma';
+import { prisma, ApplyType, RequestLoanState } from '../../config/prisma';
 import { RequestLoanListData } from '../../types/loans';
 
 const DEFAULT_USER_NAME = '무명';
