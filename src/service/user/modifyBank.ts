@@ -11,7 +11,7 @@ export const modifyBank = async (req: AuthenticatedRequest, res: Response<BasicR
       });
     }
 
-    const { bankId, bankNumber } = req.body;
+    const { bankId, bankNumber, bankName } = req.body;
     if (!bankId || !bankNumber) {
       return res.status(400).json({
         message: '올바르지 않은 입력 값'
@@ -25,11 +25,11 @@ export const modifyBank = async (req: AuthenticatedRequest, res: Response<BasicR
       });
     }
 
-    await prisma.user.update({
-      where: { id: userId },
+    await prisma.bank.update({
+      where: { id: bankId },
       data: {
-        bankId: bankId,
-        bankNumber: bankNumber
+        bankNumber: bankNumber,
+        bankName: bankName
       }
     });
 
