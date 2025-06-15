@@ -41,11 +41,11 @@ export const repay = async (req: AuthenticatedRequest, res: Response<BasicRespon
     const lastRepayDate = lastRepayment?.repayDate ?? loan.startDate;
     const currentDate = new Date();
     const msDiff = currentDate.getTime() - new Date(lastRepayDate).getTime();
-    const elaspsedDays = Math.max(Math.floor(msDiff / (1000 * 60 * 60 * 24)), 0);
+    const elapsedDays = Math.max(Math.floor(msDiff / (1000 * 60 * 60 * 24)), 0);
 
     const annualRate = parseFloat(loan.interest.toString()) / 100;
     const dailyRate = annualRate / 365;
-    const interest = Math.floor((loan.money - repayMoney) * dailyRate * elaspsedDays);
+    const interest = Math.floor((loan.money - repayMoney) * dailyRate * elapsedDays);
 
     await prisma.$transaction(async (tx) => {
       await tx.repayment.create({
