@@ -40,7 +40,7 @@ export const repayDetail = async (req: AuthenticatedRequest, res: Response<Repay
       id: repay.id,
       bondName: repay.bondLoan.name ?? '채무자',
       bankName: repay.bondLoan.bank?.bankName || '은행명',
-      bankNumber: repay.bondLoan.bank?.bankName || repay.bondLoan.bank?.bankNumberMasked || '계좌번호',
+      bankNumber: repay.bondLoan.bank?.bankNumber || repay.bondLoan.bank?.bankNumberMasked || '계좌번호',
       money: repay.money,
       duringType: repay.duringType,
       during: repay.during,
