@@ -39,12 +39,21 @@ export const sendMoney = async (sendUserId: bigint, receiveUserId: bigint, money
       };
     }
 
-    const sendResponse = await axios.post(`${BANK_SERVER_URL}/send`, {
-      sendUserBankId: sendUserBank.id,
-      receiveUserBankId: receiveUserBank.id,
-      money: money
-    });
-    if (sendResponse.status !== 0) {
+    const sendResponse = await axios.post(
+      `${BANK_SERVER_URL}/send`,
+      {
+        sendUserBankId: sendUserBank.id,
+        receiveUserBankId: receiveUserBank.id,
+        money: money
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${openToken}`
+        },
+        timeout: 5000
+      }
+    );
+    if (sendResponse.status !== 200) {
       return {
         status: sendResponse.status,
         message: '송금 실패'
