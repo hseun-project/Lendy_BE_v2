@@ -59,6 +59,6 @@ export const sendMoney = async (sendUserId: bigint, receiveUserId: bigint, money
       message: '송금 성공'
     };
   } catch (err) {
-    throw new Error('송금 실패');
+    throw new Error(`송금 실패 ${err}`);
   }
 };

@@ -20,7 +20,7 @@ export const checkBalance = async (token: string, bankId: bigint): Promise<Check
       money: response.data.money
     };
   } catch (err) {
-    throw new Error('계좌 잔액 조회 불가');
+    throw new Error(`계좌 잔액 조회 불가 ${err}`);
   }
 };
 
