@@ -7,7 +7,7 @@ if (!BANK_SERVER_URL) {
   throw Error('env 변수 불러오기 실패');
 }
 
-export const getBankInfo = async (userId: bigint): Promise<BankResponse> => {
+export const getBankInfo = async (userId: bigint): Promise<BankResponse<{ bankName: string; bankNumber: string }>> => {
   try {
     const accessToken = await redis.get(`${REDIS_KEY.ACCESS_TOKEN}:${userId}`);
     if (!accessToken) {

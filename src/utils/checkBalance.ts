@@ -7,7 +7,7 @@ if (!BANK_SERVER_URL) {
   throw Error('env 변수 불러오기 실패');
 }
 
-export const checkBalance = async (userId: bigint): Promise<BankResponse> => {
+export const checkBalance = async (userId: bigint): Promise<BankResponse<{ money: number }>> => {
   try {
     const accessToken = await redis.get(`${REDIS_KEY.ACCESS_TOKEN}:${userId}`);
     const response = await axios.get(`${BANK_SERVER_URL}/money`, {
