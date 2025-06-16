@@ -10,8 +10,7 @@ if (!OPEN_API_URL) {
 
 export const userInfo = async (userIdStr: string) => {
   try {
-    const userSeqNo = await redis.get(`${REDIS_KEY.OPEN_USER_SEQ}:${userIdStr}`);
-    const token = await redis.get(`${REDIS_KEY.OPEN_ACCESS_TOKEN}:${userIdStr}`);
+    const [userSeqNo, token] = await redis.mget(`${REDIS_KEY.OPEN_USER_SEQ}:${userIdStr}`, `${REDIS_KEY.OPEN_ACCESS_TOKEN}:${userIdStr}`);
     if (!userSeqNo || !token) {
       throw Error('userSeqNo or token is not found');
     }
@@ -34,7 +33,8 @@ export const userInfo = async (userIdStr: string) => {
     await prisma.$transaction([
       prisma.user.update({
         where: { id: userId },
-        data: { name: user_name }
+        data: { name: user_name },
+        select: { id: true }
       }),
       prisma.bank.upsert({
         where: { userId: userId },
