@@ -41,7 +41,7 @@ export const userInfo = async (userIdStr: string) => {
       {
         bankName: bankData.bank_name,
         bankNumber: bankData.account_num,
-        bankNumerMasked: bankData.account_num_masked,
+        bankNumberMasked: bankData.account_num_masked,
         apiTranId: api_tran_id
       },
       {
