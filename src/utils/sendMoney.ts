@@ -34,8 +34,8 @@ export const sendMoney = async (sendUserId: bigint, receiveUserId: bigint, money
     const sendResponse = await axios.post(
       `${BANK_SERVER_URL}/send`,
       {
-        sendUserBankId: sendUserId,
-        receiveUserBankId: receiveUserId,
+        sendUserId: sendUserId,
+        receiveUserId: receiveUserId,
         money: money
       },
       {
