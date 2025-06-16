@@ -18,7 +18,8 @@ export const getBankInfo = async (userId: bigint): Promise<BankResponse<{ bankNa
     }
 
     const bankInfoResponse = await axios.get(`${BANK_SERVER_URL}`, {
-      headers: { Authorization: `Bearer ${accessToken}` }
+      headers: { Authorization: `Bearer ${accessToken}` },
+      timeout: 5000
     });
 
     return {

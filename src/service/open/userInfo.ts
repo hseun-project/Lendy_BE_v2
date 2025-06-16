@@ -20,7 +20,8 @@ export const userInfo = async (userIdStr: string) => {
     const res = await axios.get(url, {
       headers: {
         Authorization: `Bearer ${token}`
-      }
+      },
+      timeout: 5000
     });
     const { user_name, api_tran_id, res_list } = res.data;
     if (!user_name || !api_tran_id || !res_list || !Array.isArray(res_list) || res_list.length === 0) {
@@ -35,12 +36,18 @@ export const userInfo = async (userIdStr: string) => {
       where: { id: userId },
       data: { name: user_name }
     });
-    await axios.post(`${BANK_SERVER_URL}`, {
-      bankName: bankData.bank_name,
-      bankNumber: bankData.account_num,
-      bankNumerMasked: bankData.account_num_masked,
-      apiTranId: api_tran_id
-    });
+    await axios.post(
+      `${BANK_SERVER_URL}`,
+      {
+        bankName: bankData.bank_name,
+        bankNumber: bankData.account_num,
+        bankNumerMasked: bankData.account_num_masked,
+        apiTranId: api_tran_id
+      },
+      {
+        timeout: 5000
+      }
+    );
 
     await redis.del(`${REDIS_KEY.OPEN_USER_SEQ}:${userIdStr}`);
   } catch (err) {

@@ -28,7 +28,8 @@ export const userToken = async (userCode: string, userId: string) => {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/json'
-        }
+        },
+        timeout: 5000
       }
     );
 
