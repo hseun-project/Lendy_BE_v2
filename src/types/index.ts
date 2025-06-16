@@ -30,4 +30,5 @@ export const REDIS_KEY = {
 export interface BankResponse {
   status: number;
   message: string;
+  data?: any;
 }
