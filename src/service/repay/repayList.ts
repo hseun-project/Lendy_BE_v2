@@ -33,11 +33,11 @@ export const repayList = async (req: AuthenticatedRequest, res: Response<RepayLi
       _sum: { repayMoney: true }
     });
 
-    const repaySumMap = new Map(repaySum.map((r) => [r.loanId.toString(), r._sum.repayMoney ?? 0]));
+    const repaySumMap = new Map(repaySum.map((r) => [r.loanId, r._sum.repayMoney ?? 0]));
 
     const result = myRepayList.map((loan) => ({
       ...loan,
-      repayment: repaySumMap.get(loan.id.toString()) || 0
+      repayment: repaySumMap.get(loan.id) || 0
     }));
 
     return res.status(200).json(result);
