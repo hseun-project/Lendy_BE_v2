@@ -25,6 +25,11 @@ export const modifyBank = async (req: AuthenticatedRequest, res: Response<BasicR
     }
 
     const accessToken = await redis.get(`${REDIS_KEY.ACCESS_TOKEN}:${userId}`);
+    if (!accessToken) {
+      return res.status(401).json({
+        message: '토큰 조회 실패'
+      });
+    }
     await axios.patch(
       `${BANK_SERVER_URL}`,
       {

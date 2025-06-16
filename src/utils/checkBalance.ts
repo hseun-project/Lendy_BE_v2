@@ -10,6 +10,12 @@ if (!BANK_SERVER_URL) {
 export const checkBalance = async (userId: bigint): Promise<BankResponse<{ money: number }>> => {
   try {
     const accessToken = await redis.get(`${REDIS_KEY.ACCESS_TOKEN}:${userId}`);
+    if (!accessToken) {
+      return {
+        status: 401,
+        message: '토큰 조회 실패'
+      };
+    }
     const response = await axios.get(`${BANK_SERVER_URL}/money`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
