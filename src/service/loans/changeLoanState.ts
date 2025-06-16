@@ -1,6 +1,7 @@
 import { AuthenticatedRequest, BasicResponse } from '../../types';
 import { Response } from 'express';
 import { RequestLoanState, prisma } from '../../config/prisma';
+import { sendMoney } from '../../utils/sendMoney';
 
 export const changeLoanState = async (req: AuthenticatedRequest, res: Response<BasicResponse>) => {
   try {
@@ -32,9 +33,23 @@ export const changeLoanState = async (req: AuthenticatedRequest, res: Response<B
       });
     }
 
-    await prisma.$transaction(async (tx) => {
-      await tx.applyLoan.update({ where: { id: applyLoanId }, data: { state: state } });
+    const bank = await prisma.bank.findUnique({ where: { userId: userId } });
+    if (!bank) {
+      return res.status(404).json({
+        message: '존재하지 않는 계좌정보'
+      });
+    }
 
+    if (state === RequestLoanState.APPROVED) {
+      const { status, message } = await sendMoney(userId, applyLoan.debtId, applyLoan.money);
+      if (status !== 200) {
+        return res.status(status).json({
+          message: message
+        });
+      }
+    }
+
+    await prisma.$transaction(async (tx) => {
       if (state === RequestLoanState.APPROVED) {
         await tx.loan.create({
           data: {
@@ -47,6 +62,7 @@ export const changeLoanState = async (req: AuthenticatedRequest, res: Response<B
           }
         });
       }
+      await tx.applyLoan.update({ where: { id: applyLoanId }, data: { state: state } });
     });
 
     return res.status(200).json({

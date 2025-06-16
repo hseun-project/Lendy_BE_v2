@@ -18,8 +18,7 @@ export const repayDetail = async (req: AuthenticatedRequest, res: Response<Repay
         bondLoan: {
           select: {
             name: true,
-            bankNumber: true,
-            bank: { select: { name: true } }
+            bank: { select: { bankName: true, bankNumber: true, bankNumberMasked: true } }
           }
         },
         money: true,
@@ -27,7 +26,7 @@ export const repayDetail = async (req: AuthenticatedRequest, res: Response<Repay
         during: true,
         startDate: true,
         interest: true,
-        repayment: { select: { repayMoney: true }, where: { state: 'APPROVED' } }
+        repayment: { select: { repayMoney: true } }
       },
       where: { id: loanId }
     });
@@ -40,8 +39,8 @@ export const repayDetail = async (req: AuthenticatedRequest, res: Response<Repay
     const result: RepayDetailResponse = {
       id: repay.id,
       bondName: repay.bondLoan.name ?? '채무자',
-      bankName: repay.bondLoan.bank?.name || '은행명',
-      bankNumber: repay.bondLoan.bankNumber || '계좌번호',
+      bankName: repay.bondLoan.bank?.bankName || '은행명',
+      bankNumber: repay.bondLoan.bank?.bankNumber || repay.bondLoan.bank?.bankNumberMasked || '계좌번호',
       money: repay.money,
       duringType: repay.duringType,
       during: repay.during,

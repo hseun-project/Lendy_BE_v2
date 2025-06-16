@@ -1,6 +1,6 @@
 import { AuthenticatedRequest, BasicResponse } from '../../types';
 import { Response } from 'express';
-import { prisma } from '../../config/prisma';
+import { LoanState, prisma } from '../../config/prisma';
 import { RepayListData } from '../../types/repay';
 
 export const repayList = async (req: AuthenticatedRequest, res: Response<RepayListData[] | BasicResponse>) => {
@@ -18,16 +18,27 @@ export const repayList = async (req: AuthenticatedRequest, res: Response<RepayLi
         money: true,
         duringType: true,
         during: true,
-        startDate: true,
-        repayment: { select: { repayMoney: true }, where: { state: 'APPROVED' } }
+        startDate: true
       },
-      where: { debtId: userId }
+      where: { debtId: userId, state: LoanState.ACTIVE }
     });
 
-    const result = myRepayList.map((loan) => {
-      const totalRepay = loan.repayment.reduce((sum, r) => sum + r.repayMoney, 0);
-      return { ...loan, repayment: totalRepay };
+    if (myRepayList.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    const repaySum = await prisma.repayment.groupBy({
+      by: ['loanId'],
+      where: { loanId: { in: myRepayList.map((loan) => loan.id) } },
+      _sum: { repayMoney: true }
     });
+
+    const repaySumMap = new Map(repaySum.map((r) => [r.loanId, r._sum.repayMoney ?? 0]));
+
+    const result = myRepayList.map((loan) => ({
+      ...loan,
+      repayment: repaySumMap.get(loan.id) || 0
+    }));
 
     return res.status(200).json(result);
   } catch (err) {

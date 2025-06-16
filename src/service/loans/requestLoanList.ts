@@ -1,6 +1,6 @@
 import { AuthenticatedRequest, BasicResponse } from '../../types';
 import { Response } from 'express';
-import { prisma, ApplyType } from '../../config/prisma';
+import { prisma, ApplyType, RequestLoanState } from '../../config/prisma';
 import { RequestLoanListData } from '../../types/loans';
 
 const DEFAULT_USER_NAME = '무명';
@@ -23,7 +23,8 @@ export const requestLoanList = async (req: AuthenticatedRequest, res: Response<R
 
     const where = {
       applyType: loanType,
-      ...(loanType === ApplyType.PRIVATE_LOAN && { bondId: userId })
+      ...(loanType === ApplyType.PRIVATE_LOAN && { bondId: userId }),
+      state: RequestLoanState.PENDING
     };
 
     const requestLoans = await prisma.applyLoan.findMany({

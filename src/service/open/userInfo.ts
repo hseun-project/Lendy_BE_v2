@@ -10,8 +10,7 @@ if (!OPEN_API_URL) {
 
 export const userInfo = async (userIdStr: string) => {
   try {
-    const userSeqNo = await redis.get(`${REDIS_KEY.OPEN_USER_SEQ} ${userIdStr}`);
-    const token = await redis.get(`${REDIS_KEY.OPEN_ACCESS_TOKEN} ${userIdStr}`);
+    const [userSeqNo, token] = await redis.mget(`${REDIS_KEY.OPEN_USER_SEQ}:${userIdStr}`, `${REDIS_KEY.OPEN_ACCESS_TOKEN}:${userIdStr}`);
     if (!userSeqNo || !token) {
       throw Error('userSeqNo or token is not found');
     }
@@ -22,20 +21,41 @@ export const userInfo = async (userIdStr: string) => {
         Authorization: `Bearer ${token}`
       }
     });
-    const { user_name } = res.data;
-    if (!user_name) {
+    const { user_name, api_tran_id, res_list } = res.data;
+    if (!user_name || !api_tran_id || !res_list || !Array.isArray(res_list) || res_list.length === 0) {
       throw Error('응답 데이터 없음');
     }
 
     const userId = BigInt(userIdStr);
 
-    await prisma.user.update({
-      where: { id: userId },
-      data: {
-        name: user_name
-      }
-    });
-    await redis.del(`${REDIS_KEY.OPEN_USER_SEQ} ${userIdStr}`);
+    const bankData = res_list[0];
+
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: userId },
+        data: { name: user_name },
+        select: { id: true }
+      }),
+      prisma.bank.upsert({
+        where: { userId: userId },
+        update: {
+          bankName: bankData.bank_name,
+          bankNumber: bankData.account_num,
+          bankNumberMasked: bankData.account_num_masked,
+          apiTranId: api_tran_id,
+          alias: bankData.account_alias
+        },
+        create: {
+          bankName: bankData.bank_name,
+          bankNumber: bankData.account_num,
+          bankNumberMasked: bankData.account_num_masked,
+          apiTranId: api_tran_id,
+          alias: bankData.account_alias,
+          userId: userId
+        }
+      })
+    ]);
+    await redis.del(`${REDIS_KEY.OPEN_USER_SEQ}:${userIdStr}`);
   } catch (err) {
     throw err;
   }

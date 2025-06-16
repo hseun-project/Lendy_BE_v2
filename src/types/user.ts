@@ -7,6 +7,7 @@ export interface UserInfoResponse {
   bank: {
     bankName: string;
     bankNumber: string;
+    money: number;
   };
 }
 

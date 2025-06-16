@@ -11,8 +11,8 @@ export const logout = async (req: AuthenticatedRequest, res: Response<BasicRespo
       });
     }
 
-    await redis.del(`${REDIS_KEY.ACCESS_TOKEN} ${userId}`);
-    await redis.del(`${REDIS_KEY.REFRESH_TOKEN} ${userId}`);
+    await redis.del(`${REDIS_KEY.ACCESS_TOKEN}:${userId}`);
+    await redis.del(`${REDIS_KEY.REFRESH_TOKEN}:${userId}`);
 
     return res.status(200).json({
       message: '로그아웃 성공'

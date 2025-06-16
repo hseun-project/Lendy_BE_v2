@@ -29,3 +29,8 @@ export interface RequestRepayListData {
   repayInterest: number;
   repayDate: Date;
 }
+
+export interface RepayResponse {
+  repayMoney: number;
+  repayInterest: number;
+}
