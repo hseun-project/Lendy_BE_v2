@@ -2,7 +2,6 @@ import { AuthenticatedRequest, BasicResponse } from '../../types';
 import { Response } from 'express';
 import { LoanState, prisma } from '../../config/prisma';
 import { RepayListData } from '../../types/repay';
-import loans from '../loans';
 
 export const repayList = async (req: AuthenticatedRequest, res: Response<RepayListData[] | BasicResponse>) => {
   try {
