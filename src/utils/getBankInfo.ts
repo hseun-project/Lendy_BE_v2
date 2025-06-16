@@ -12,7 +12,7 @@ export const getBankInfo = async (userId: bigint): Promise<BankResponse<{ bankNa
     const accessToken = await redis.get(`${REDIS_KEY.ACCESS_TOKEN}:${userId}`);
     if (!accessToken) {
       return {
-        status: 400,
+        status: 401,
         message: '토큰 조회 불가'
       };
     }
