@@ -1,34 +1,32 @@
 import axios from 'axios';
-import { prisma } from '../config/prisma';
 import { BankResponse, REDIS_KEY } from '../types';
 import { checkBalance } from './checkBalance';
 import redis from '../config/redis';
 
 const BANK_SERVER_URL = process.env.BANK_SERVER_URL;
+if (!BANK_SERVER_URL) {
+  throw Error('env 변수 불러오기 실패');
+}
 
 export const sendMoney = async (sendUserId: bigint, receiveUserId: bigint, money: number): Promise<BankResponse> => {
   try {
-    const sendUserBank = await prisma.bank.findUnique({ where: { userId: sendUserId } });
-    const receiveUserBank = await prisma.bank.findUnique({ where: { userId: receiveUserId } });
-
-    if (!sendUserBank || !receiveUserBank) {
-      return {
-        status: 404,
-        message: '존재하지 않는 계좌 정보'
-      };
-    }
-
-    const openToken = await redis.get(`${REDIS_KEY.OPEN_ACCESS_TOKEN}:${sendUserBank.userId}`);
-    if (!openToken) {
-      return {
-        status: 404,
-        message: '등록되지 않은 계좌 정보'
-      };
-    }
-    const checkBalanceResponse = await checkBalance(openToken, sendUserBank.id);
-    if (checkBalanceResponse.money < money) {
+    const accessToken = await redis.get(`${REDIS_KEY.ACCESS_TOKEN}:${sendUserId}`);
+    if (!accessToken) {
       return {
         status: 400,
+        message: '토큰 조회 불가'
+      };
+    }
+    const checkBalanceResponse = await checkBalance(sendUserId);
+    if (!checkBalanceResponse.data) {
+      return {
+        status: 400,
+        message: '계좌 잔액 조회 실패'
+      };
+    }
+    if (checkBalanceResponse.data.money < money) {
+      return {
+        status: 409,
         message: '계좌 잔액 부족'
       };
     }
@@ -36,13 +34,13 @@ export const sendMoney = async (sendUserId: bigint, receiveUserId: bigint, money
     const sendResponse = await axios.post(
       `${BANK_SERVER_URL}/send`,
       {
-        sendUserBankId: sendUserBank.id,
-        receiveUserBankId: receiveUserBank.id,
+        sendUserBankId: sendUserId,
+        receiveUserBankId: receiveUserId,
         money: money
       },
       {
         headers: {
-          Authorization: `Bearer ${openToken}`
+          Authorization: `Bearer ${accessToken}`
         },
         timeout: 5000
       }
