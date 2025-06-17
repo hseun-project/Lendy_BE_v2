@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { AuthenticatedRequest, BasicResponse } from '../../types';
 import { prisma, RequestLoanState } from '../../config/prisma';
+import { decrementCredit } from '../../utils/credit';
 
 export const applyLoan = async (req: AuthenticatedRequest, res: Response<BasicResponse>) => {
   try {
@@ -41,7 +42,7 @@ export const applyLoan = async (req: AuthenticatedRequest, res: Response<BasicRe
 
     const myLoan = await prisma.loan.findMany({ where: { debtId: userId } });
     if (myLoan.length > 0) {
-      // 신용 점수 감소 API 호출
+      await decrementCredit(userId, 40);
     }
 
     const bondUser = bondId ? await prisma.user.findUnique({ where: { id: bondId } }) : undefined;

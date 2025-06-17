@@ -27,7 +27,8 @@ export const REDIS_KEY = {
   OPEN_USER_SEQ: 'openUserSeqNo'
 };
 
-export interface BankResponse {
+export interface BankResponse<T = unknown> {
   status: number;
   message: string;
+  data?: T;
 }

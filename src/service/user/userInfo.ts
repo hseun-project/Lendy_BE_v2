@@ -2,8 +2,8 @@ import { Response } from 'express';
 import { AuthenticatedRequest, BasicResponse, REDIS_KEY } from '../../types';
 import { prisma } from '../../config/prisma';
 import { UserInfoResponse } from '../../types/user';
-import redis from '../../config/redis';
 import { checkBalance } from '../../utils/checkBalance';
+import { getBankInfo } from '../../utils/getBankInfo';
 
 export const userInfo = async (req: AuthenticatedRequest, res: Response<BasicResponse | UserInfoResponse>) => {
   try {
@@ -19,8 +19,7 @@ export const userInfo = async (req: AuthenticatedRequest, res: Response<BasicRes
       select: {
         email: true,
         name: true,
-        creditScore: true,
-        bank: { select: { id: true, bankName: true, bankNumber: true, bankNumberMasked: true } }
+        creditScore: true
       }
     });
     if (!user) {
@@ -29,13 +28,13 @@ export const userInfo = async (req: AuthenticatedRequest, res: Response<BasicRes
       });
     }
 
-    const openToken = await redis.get(`${REDIS_KEY.OPEN_ACCESS_TOKEN}:${userId}`);
-    if (!openToken || !user.bank?.id) {
-      return res.status(404).json({
-        message: '등록되지 않은 계좌 정보'
+    const bankInfo = await getBankInfo(userId);
+    if (bankInfo.status !== 200) {
+      return res.status(bankInfo.status).json({
+        message: bankInfo.message
       });
     }
-    const checkBalanceResponse = await checkBalance(openToken, user.bank.id);
+    const checkBalanceResponse = await checkBalance(userId);
     if (checkBalanceResponse.status !== 200) {
       return res.status(checkBalanceResponse.status).json({
         message: checkBalanceResponse.message
@@ -47,9 +46,9 @@ export const userInfo = async (req: AuthenticatedRequest, res: Response<BasicRes
       name: user.name || '사용자',
       creditScore: user.creditScore,
       bank: {
-        bankName: user.bank?.bankName || '은행명',
-        bankNumber: user.bank?.bankNumber || user.bank?.bankNumberMasked || '',
-        money: checkBalanceResponse.money
+        bankName: bankInfo.data.bankName || '은행명',
+        bankNumber: bankInfo.data.bankNumber,
+        money: checkBalanceResponse.data.money
       }
     });
   } catch (err) {

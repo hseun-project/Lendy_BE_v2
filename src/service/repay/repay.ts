@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { AuthenticatedRequest, BasicResponse } from '../../types';
 import { LoanState, prisma } from '../../config/prisma';
 import { RepayResponse } from '../../types/repay';
+import { incrementCredit } from '../../utils/credit';
 
 export const repay = async (req: AuthenticatedRequest, res: Response<RepayResponse | BasicResponse>) => {
   try {
@@ -70,6 +71,8 @@ export const repay = async (req: AuthenticatedRequest, res: Response<RepayRespon
         });
       }
     });
+
+    await incrementCredit(userId, 6);
 
     return res.status(201).json({
       repayMoney: money - interest,

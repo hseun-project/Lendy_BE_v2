@@ -33,13 +33,6 @@ export const changeLoanState = async (req: AuthenticatedRequest, res: Response<B
       });
     }
 
-    const bank = await prisma.bank.findUnique({ where: { userId: userId } });
-    if (!bank) {
-      return res.status(404).json({
-        message: '존재하지 않는 계좌정보'
-      });
-    }
-
     if (state === RequestLoanState.APPROVED) {
       const { status, message } = await sendMoney(userId, applyLoan.debtId, applyLoan.money);
       if (status !== 200) {

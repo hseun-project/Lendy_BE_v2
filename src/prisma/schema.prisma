@@ -35,23 +35,10 @@ model User {
   creditScore Int         @default(500)
   name        String?     @db.VarChar(10)
 
-  bank        Bank?
   debtApply   ApplyLoan[] @relation("DebtApply")
   bondApply   ApplyLoan[] @relation("BondApply")
   debtLoan    Loan[]      @relation("DebtLoan")
   bondLoan    Loan[]      @relation("BondLoan")
-}
-
-model Bank {
-  id               BigInt @id @default(autoincrement()) @db.BigInt
-  userId           BigInt @unique @db.BigInt
-  bankName         String @db.VarChar(20)
-  bankNumber       String @db.VarChar(20)
-  bankNumberMasked String @db.VarChar(20)
-  apiTranId        String @db.VarChar(40)
-  alias            String @db.VarChar(50)
-
-  user             User   @relation(fields: [userId], references: [id])
 }
 
 model ApplyLoan {

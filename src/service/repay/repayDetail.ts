@@ -2,6 +2,7 @@ import { AuthenticatedRequest, BasicResponse } from '../../types';
 import { Response } from 'express';
 import { prisma } from '../../config/prisma';
 import { RepayDetailResponse } from '../../types/repay';
+import { getBankInfo } from '../../utils/getBankInfo';
 
 export const repayDetail = async (req: AuthenticatedRequest, res: Response<RepayDetailResponse | BasicResponse>) => {
   try {
@@ -17,8 +18,8 @@ export const repayDetail = async (req: AuthenticatedRequest, res: Response<Repay
         id: true,
         bondLoan: {
           select: {
-            name: true,
-            bank: { select: { bankName: true, bankNumber: true, bankNumberMasked: true } }
+            id: true,
+            name: true
           }
         },
         money: true,
@@ -35,12 +36,18 @@ export const repayDetail = async (req: AuthenticatedRequest, res: Response<Repay
         message: '존재하지 않는 대출'
       });
     }
+    const bankInfo = await getBankInfo(repay.bondLoan.id);
+    if (bankInfo.status !== 200) {
+      return res.status(bankInfo.status).json({
+        message: bankInfo.message
+      });
+    }
 
     const result: RepayDetailResponse = {
       id: repay.id,
       bondName: repay.bondLoan.name ?? '채무자',
-      bankName: repay.bondLoan.bank?.bankName || '은행명',
-      bankNumber: repay.bondLoan.bank?.bankNumber || repay.bondLoan.bank?.bankNumberMasked || '계좌번호',
+      bankName: bankInfo.data?.bankName ?? '은행명',
+      bankNumber: bankInfo.data?.bankNumber ?? '계좌번호',
       money: repay.money,
       duringType: repay.duringType,
       during: repay.during,
