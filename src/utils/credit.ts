@@ -12,10 +12,10 @@ export const credit = async (userId: bigint, score: number, dir: Direction) => {
   });
 };
 
-export const incrementCredit = async (userId: bigint, score: number) => {
-  credit(userId, score, 'increment');
+export const incrementCredit = (userId: bigint, score: number) => {
+  return credit(userId, score, 'increment');
 };
 
-export const decrementCredit = async (userId: bigint, score: number) => {
-  credit(userId, score, 'decrement');
+export const decrementCredit = (userId: bigint, score: number) => {
+  return credit(userId, score, 'decrement');
 };
