@@ -3,7 +3,7 @@ import { prisma } from '../config/prisma';
 type Direction = 'increment' | 'decrement';
 
 export const credit = async (userId: bigint, score: number, dir: Direction) => {
-  if (score <= 0) {
+  if (!Number.isInteger(score) || score <= 0) {
     throw new Error('점수는 반드시 자연수');
   }
   return prisma.user.update({
